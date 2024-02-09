@@ -10,6 +10,9 @@
 
   <ItemGroup>
     <PackageReference Include="Aspose.Cells" Version="24.2.0" />
+    <Content Include="Design\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
