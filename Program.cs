@@ -9,10 +9,21 @@ namespace Whjeon
         private const string CopyExcelPath = "./Design";
         private const string OriginExcelPath = "..\\..\\..\\Design\\";
 
+        //두 파일이 같은 내용인지?
+        //private static bool IsDifferentFile(FileInfo beforeFileInfo, FileInfo nowFileInfo) 
+        //{
+        //    MD5 md5 = System.Security.Cryptography.MD5.Create();
+        //    var beforeHash = BitConverter.ToString(md5.ComputeHash(beforeFileInfo.OpenRead()));
+        //    var nowHash = BitConverter.ToString(md5.ComputeHash(nowFileInfo.OpenRead()));
+        //    md5.Dispose();
+            
+        //    return (beforeHash != nowHash);
+        //}
+    
         /// <summary>        
         /// 1.Design 폴더내 엑셀파일들을 읽어온다
         /// 2.Json으로 변환한다.
-        /// 3.이미 있는경우, 해싱값 비교하여 다른경우 덮어쓴다.
+        /// 3.이미있는파일이면 덮어쓰게 되고, Git에 의해 변경된파일 커밋
         /// </summary>        
         public static void Main(string[] args)
         {
@@ -22,12 +33,12 @@ namespace Whjeon
                 var directoryInfo = new DirectoryInfo(CopyExcelPath);
                 var fileInfos = directoryInfo.GetFiles();
                 foreach ( var fileInfo in fileInfos ) 
-                {
+                {                    
                     var splits = fileInfo.Name.Split('.');
                     if (splits[1] != ExcelExtension)
                         continue;
+
                     var wb = new Workbook($"{CopyExcelPath}\\{fileInfo.Name}");
-                    //TODO 3번기능
                     wb.Save($"{OriginExcelPath}{splits[0]}.{JsonExtension}", SaveFormat.Json);
                     wb.Dispose();
                 }
