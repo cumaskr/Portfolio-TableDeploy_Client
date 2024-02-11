@@ -9,22 +9,19 @@ namespace LocalTableBuilder
     /// </summary>
     public class ExcelConverter
     {
-        private const string ExcelExtension = "xlsx";
         private const string JsonExtension = "json";
-        private const string CopyExcelPath = "./Design\\Excel";
-        private const string OriginExcelPath = "..\\..\\..\\Design\\Json\\";
 
         public void Start() 
         {
             Console.WriteLine("Excel 변환 시작");
-            if (Directory.Exists(CopyExcelPath))
+            if (Directory.Exists(TablePath.CopyExcelPath))
             {
-                var directoryInfo = new DirectoryInfo(CopyExcelPath);
+                var directoryInfo = new DirectoryInfo(TablePath.CopyExcelPath);
                 var fileInfos = directoryInfo.GetFiles();
                 foreach (var fileInfo in fileInfos)
-                {                    
-                    var wb = new Workbook($"{CopyExcelPath}\\{fileInfo.Name}");
-                    wb.Save($"{OriginExcelPath}" +
+                {
+                    var wb = new Workbook($"{TablePath.CopyExcelPath}\\{fileInfo.Name}");
+                    wb.Save($"{TablePath.OriginExcelPath}" +
                         $"{Path.GetFileNameWithoutExtension(fileInfo.Name)}" +
                         $".{JsonExtension}", SaveFormat.Json);
                     wb.Dispose();
