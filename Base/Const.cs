@@ -9,6 +9,6 @@ namespace LocalTableBuilder
     public class TablePath()
     {
         public const string CopyExcelPath = "./Design\\Excel";
-        public const string OriginExcelPath = "..\\..\\..\\Design\\Json\\";
+        public const string OriginJsonPath = "..\\..\\..\\Design\\Json\\";
     }
 }

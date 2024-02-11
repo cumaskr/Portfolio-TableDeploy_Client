@@ -21,7 +21,7 @@ namespace LocalTableBuilder
                 foreach (var fileInfo in fileInfos)
                 {
                     var wb = new Workbook($"{TablePath.CopyExcelPath}\\{fileInfo.Name}");
-                    wb.Save($"{TablePath.OriginExcelPath}" +
+                    wb.Save($"{TablePath.OriginJsonPath}" +
                         $"{Path.GetFileNameWithoutExtension(fileInfo.Name)}" +
                         $".{JsonExtension}", SaveFormat.Json);
                     wb.Dispose();
