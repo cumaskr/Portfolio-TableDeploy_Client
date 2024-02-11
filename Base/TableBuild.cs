@@ -14,7 +14,7 @@ namespace LocalTableBuilder
         #region Util
 
         //두 파일이 다른지?
-        private static bool IsDifferentFile(FileInfo beforeFileInfo, FileInfo nowFileInfo)
+        private bool IsDifferentFile(FileInfo beforeFileInfo, FileInfo nowFileInfo)
         {
             MD5 md5 = System.Security.Cryptography.MD5.Create();
             var beforeHash = BitConverter.ToString(md5.ComputeHash(beforeFileInfo.OpenRead()));
