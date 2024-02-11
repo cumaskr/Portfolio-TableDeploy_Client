@@ -7,8 +7,11 @@ namespace Whjeon
     {
         public static void Main(string[] args)
         {
-            var ec = new ExcelConverter();
-            ec.Start();
+            //var ec = new ExcelConverter();
+            //ec.Start();
+
+            var tb = new TableBuild();
+            tb.Start();
         }
     }
 }

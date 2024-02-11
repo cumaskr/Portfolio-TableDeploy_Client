@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace LocalTableBuilder
 {
-    public class TablePath()
+    public class Const
     {
-        public const string CopyExcelPath = "./Design\\Excel";
-        public const string OriginJsonPath = "..\\..\\..\\Design\\Json\\";
-    }
+        public class FileExtension
+        {
+            public const string Json = "json";
+        }
+
+        public class Path()
+        {
+            public const string BuildExcelPath = "./Design\\Excel";
+            public const string ProjectJsonPath = "..\\..\\..\\Design\\Json\\";
+            public const string TablePath = "..\\..\\..\\Table\\";
+        }
+    }    
 }
