@@ -11,8 +11,8 @@ namespace LocalTableBuilder
     {
         private const string ExcelExtension = "xlsx";
         private const string JsonExtension = "json";
-        private const string CopyExcelPath = "./Design";
-        private const string OriginExcelPath = "..\\..\\..\\Design\\";
+        private const string CopyExcelPath = "./Design\\Excel";
+        private const string OriginExcelPath = "..\\..\\..\\Design\\Json\\";
 
         public void Start() 
         {
@@ -22,13 +22,11 @@ namespace LocalTableBuilder
                 var directoryInfo = new DirectoryInfo(CopyExcelPath);
                 var fileInfos = directoryInfo.GetFiles();
                 foreach (var fileInfo in fileInfos)
-                {
-                    var splits = fileInfo.Name.Split('.');
-                    if (splits[1] != ExcelExtension)
-                        continue;
-
+                {                    
                     var wb = new Workbook($"{CopyExcelPath}\\{fileInfo.Name}");
-                    wb.Save($"{OriginExcelPath}{splits[0]}.{JsonExtension}", SaveFormat.Json);
+                    wb.Save($"{OriginExcelPath}" +
+                        $"{Path.GetFileNameWithoutExtension(fileInfo.Name)}" +
+                        $".{JsonExtension}", SaveFormat.Json);
                     wb.Dispose();
                 }
             }
