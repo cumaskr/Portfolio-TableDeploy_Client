@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Google.Cloud.Firestore;
+using Google.Protobuf.Compiler;
+using Newtonsoft.Json;
 using System;
 using System.Security.Cryptography;
 
@@ -156,11 +158,15 @@ namespace LocalTableBuilder
                     }
                 }
             }
-            //-------------------------------------------------------------------------------7.최신버전 목록 저장
+            //-------------------------------------------------------------------------------7.최신버전 목록 저장 및 파이어베이스 갱신
             if (0 < RecentVersions.Keys.Count)
+            {
                 SaveVersions(RecentVersions);
 
-            //TODO 8. 파이어베이스 연동[whjeon 24.02.12]
+                //파이어베이스 최신버전 목록 갱신
+                //var fb = new FireBase();
+                //fb.UpdateTableVersions(RecentVersions);
+            }
 
             Console.WriteLine("테이블 빌드 완료");
         }

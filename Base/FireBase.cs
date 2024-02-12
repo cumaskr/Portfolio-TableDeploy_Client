@@ -1,9 +1,4 @@
 ﻿using Google.Cloud.Firestore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LocalTableBuilder
 {
@@ -21,6 +16,9 @@ namespace LocalTableBuilder
         //저장소 접근하기위한 Json파일명(해당 파일은 깃에 올라가지 않음, 특정 컴퓨터 내부에서 관리)
         private string AdminSdkJson = "tablebuild-e6f20-firebase-adminsdk-xx0ap-d795853497.json";
         private string ProjectId = "tablebuild-e6f20";
+        private string Server = "Local";
+        private string DocumentName = "Table";
+
         //저장소 객체
         public FirestoreDb Db { get; set; }
         //생성자(초기화)
@@ -29,6 +27,12 @@ namespace LocalTableBuilder
             string path = $"{Const.Path.TablePath}\\FireBase\\{AdminSdkJson}";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             Db = FirestoreDb.Create(ProjectId);
+        }
+        //테이블 최신 버전 업로드
+        public void UpdateTableVersions(Dictionary<string, int> recentVersions) 
+        {
+            var collection = Db.Collection(Server).Document(DocumentName);
+            collection.SetAsync(recentVersions).GetAwaiter().GetResult();
         }
     }
 }
