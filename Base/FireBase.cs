@@ -20,19 +20,27 @@ namespace LocalTableBuilder
         private string DocumentName = "Table";
 
         //저장소 객체
-        public FirestoreDb Db { get; set; }
+        public FirestoreDb? Db { get; set; }
+
         //생성자(초기화)
         public FireBase()
         {
-            string path = $"{Const.Path.TablePath}\\FireBase\\{AdminSdkJson}";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            Db = FirestoreDb.Create(ProjectId);
+            Db = null;
+            string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{AdminSdkJson}";
+            if (File.Exists(path))
+            {
+                Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+                Db = FirestoreDb.Create(ProjectId);                
+            }
         }
         //테이블 최신 버전 업로드
         public void UpdateTableVersions(Dictionary<string, int> recentVersions) 
         {
-            var collection = Db.Collection(Server).Document(DocumentName);
-            collection.SetAsync(recentVersions).GetAwaiter().GetResult();
+            if (null != Db) 
+            {
+                var collection = Db.Collection(Server).Document(DocumentName);
+                collection.SetAsync(recentVersions).GetAwaiter().GetResult();
+            }
         }
     }
 }
