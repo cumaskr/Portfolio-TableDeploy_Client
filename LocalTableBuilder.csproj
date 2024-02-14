@@ -21,10 +21,14 @@
 
   <ItemGroup>
     <None Remove=".env" />
+    <None Remove="FireBase.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include=".env">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="FireBase.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
