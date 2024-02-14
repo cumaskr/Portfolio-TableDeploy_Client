@@ -14,6 +14,6 @@ namespace LocalTableBuilder
         //리소스 사용후 바로 반환하기 위하여, 사용한 라이브러리의 Dispose를 호출해준다.
         public void Dispose();
         //연결되어있는지 체크하는 함수
-        public bool IsOk();
+        public bool IsConnect();
     }
 }

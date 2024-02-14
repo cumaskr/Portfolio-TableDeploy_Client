@@ -62,7 +62,7 @@ namespace LocalTableBuilder
         }
 
         //연결 확인
-        public bool IsOk()
+        public bool IsConnect()
         {
             Console.WriteLine("[FireBase] Check Connect");
 

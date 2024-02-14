@@ -8,7 +8,7 @@ namespace LocalTableBuilder
     /// AWS S3(저장소) 클래스[whjeon 24.02.14]
     /// 사용용도 : 테이블 Json 저장, 서버에서 해당 테이블을 읽어 데이터 사용
     /// 사용방법
-    /// 1).env 파일에 AWS 관련 인증정보 수동 입력
+    /// 1).env 파일에 AWS 관련 인증정보 수동 입력(GitHub에는 빈파일 올라감)
     /// 2)해당 클래스 사용
     public class AWSS3 : IDisposable, IExternalStore
     {
@@ -39,10 +39,10 @@ namespace LocalTableBuilder
                 return;
             }
 
-            Console.WriteLine("[AWS] Setting Done");
+            Console.WriteLine("[AWS] Ok");
         }
 
-        //using or 사용후 꼭 수동 호출 해주세요!
+        //리소스 정리 - using or 사용후 꼭 수동 호출 해주세요!
         public void Dispose()
         {
             if (null != Client)
@@ -51,9 +51,11 @@ namespace LocalTableBuilder
             }
         }
 
-        //정상 셋팅되었는지?
-        public bool IsOk()
+        //연결 확인
+        public bool IsConnect()
         {
+            Console.WriteLine("[AWSS3] Check Connect");
+
             if (null == Client)
             {
                 return false;
@@ -67,6 +69,9 @@ namespace LocalTableBuilder
                     Console.WriteLine("[AWS] Connect Fail");
                     return false;
                 }
+
+                Console.WriteLine("[AWSS3] Ok");
+
                 return true;
             }
         }
