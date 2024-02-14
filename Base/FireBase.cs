@@ -41,8 +41,6 @@ namespace LocalTableBuilder
                 Db = null;
                 return;
             }
-
-            Console.WriteLine("[FireBase] Ok");
         }
 
         //테이블 최신 버전 업로드
@@ -83,8 +81,6 @@ namespace LocalTableBuilder
                     return false;
                 }
             }
-
-            Console.WriteLine("[FireBase] Ok");
 
             return true;
         }

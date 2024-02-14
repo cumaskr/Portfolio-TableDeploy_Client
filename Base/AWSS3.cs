@@ -38,8 +38,6 @@ namespace LocalTableBuilder
                 Client = null;
                 return;
             }
-
-            Console.WriteLine("[AWS] Ok");
         }
 
         //리소스 정리 - using or 사용후 꼭 수동 호출 해주세요!
@@ -54,7 +52,7 @@ namespace LocalTableBuilder
         //연결 확인
         public bool IsConnect()
         {
-            Console.WriteLine("[AWSS3] Check Connect");
+            Console.WriteLine("[AWS] Check Connect");
 
             if (null == Client)
             {
@@ -69,8 +67,6 @@ namespace LocalTableBuilder
                     Console.WriteLine("[AWS] Connect Fail");
                     return false;
                 }
-
-                Console.WriteLine("[AWSS3] Ok");
 
                 return true;
             }
