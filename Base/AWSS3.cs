@@ -6,12 +6,13 @@ namespace LocalTableBuilder
 {
     /// <summary>
     /// AWS S3(저장소) 클래스[whjeon 24.02.14]
-    /// 사용용도 : 테이블 Json S3에 저장, 서버에서 해당 테이블을 읽어 데이터 사용
+    /// 사용용도 : 테이블 Json 저장, 서버에서 해당 테이블을 읽어 데이터 사용
     /// 사용방법
     /// 1).env 파일에 AWS 관련 인증정보 수동 입력
     /// 2)해당 클래스 사용
     public class AWSS3 : IDisposable, IExternalStore
     {
+        //AWS 서비스 사용하기위한 클라이언트 객체
         public AmazonS3Client? Client { get; set; } = null;
 
         public AWSS3()
@@ -49,8 +50,9 @@ namespace LocalTableBuilder
                 Client.Dispose();
             }
         }
+
         //정상 셋팅되었는지?
-        public bool IsOk() 
+        public bool IsOk()
         {
             if (null == Client)
             {
@@ -69,3 +71,4 @@ namespace LocalTableBuilder
             }
         }
     }
+}
