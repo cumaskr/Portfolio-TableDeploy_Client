@@ -1,4 +1,5 @@
-﻿using Google.Cloud.Firestore;
+﻿using Aspose.Cells.Charts;
+using Google.Cloud.Firestore;
 using Google.Protobuf.Compiler;
 using Newtonsoft.Json;
 using System;
@@ -27,22 +28,22 @@ namespace LocalTableBuilder
         }
 
         //테이블 폴더 밑의 Json 폴더명 경로 - ex)Character/1.json 에서 Character
-        private string GetTableJsonFolderPath(string fileName)
+        private string GetTableFolderPath(string folderName)
         {
             //Table폴더 하위 파일이라는 뜻으로 table t 축약형으로 네이밍
-             return $"{Const.Path.TablePath}{fileName}";            
+             return $"{Const.Path.TablePath}{folderName}";            
         }
 
         //테이블 폴더 밑의 Json 경로 - ex)Character/1.json 에서 1.json
-        private string GetTableJsonPath(string fileName, int version) 
+        private string GetTableJsonPath(string folderName, int version) 
         {
             //Table폴더 하위 파일이라는 뜻으로 table t 축약형으로 네이밍
-            return $"{GetTableJsonFolderPath(fileName)}\\{version}.{Const.FileExtension.Json}";
+            return $"{GetTableFolderPath(folderName)}\\{version}.{Const.FileExtension.Json}";
         }
 
         #endregion
 
-        #region SaveLoad
+        #region Text
 
         //테이블별 최신버전 목록 저장
         private void SaveVersions(Dictionary<string, int> versions)
@@ -86,7 +87,19 @@ namespace LocalTableBuilder
         {
             Console.WriteLine("테이블 빌드 시작");
 
+            //--------------------------------------------------------------------------------0.외부 저장소 셋팅
+            //AWS 객체 생성
+            using var aws = new AWSS3();
+            if (false == aws.IsConnect())
+                return;
+            //FireBase 객체 생성
+            using var fb = new FireBase();
+            if (false == fb.IsConnect())
+                return;
+
             //--------------------------------------------------------------------------------1.버전관리 파일이 있다면 로드 or 초기화
+            Console.WriteLine("테이블 빌드 중");
+
             if (File.Exists(VersionFilePath))
             {
                 RecentVersions = LoadVersions();
@@ -99,10 +112,10 @@ namespace LocalTableBuilder
             var fileInfos = directoryInfo.GetFiles();
             foreach (var projectJsonFile in fileInfos)
             {
-                var projectJsonFileName = Path.GetFileNameWithoutExtension(projectJsonFile.Name);
+                var projectJsonFolderName = Path.GetFileNameWithoutExtension(projectJsonFile.Name);
                 //--------------------------------------------------------------------------------3.해당 파일의 최신버전 조회
                 var version = 0;
-                if (RecentVersions.TryGetValue(projectJsonFileName, out var value))
+                if (RecentVersions.TryGetValue(projectJsonFolderName, out var value))
                 {
                     version = value;
                 }
@@ -111,14 +124,14 @@ namespace LocalTableBuilder
                 if (0 == version)
                 {
                     //폴더생성
-                    Directory.CreateDirectory(GetTableJsonFolderPath(projectJsonFileName));
+                    Directory.CreateDirectory(GetTableFolderPath(projectJsonFolderName));
                     //검증
                     var firstVersion = version + 1;
-                    var tJsonPath = GetTableJsonPath(projectJsonFileName, firstVersion);
+                    var tJsonPath = GetTableJsonPath(projectJsonFolderName, firstVersion);
                     //예외처리)버전과 파일상태가 맞지않은 경우(버그)
                     if (File.Exists(tJsonPath))
                     {
-                        SaveError("AlreadyFileExist", projectJsonFileName, firstVersion);
+                        SaveError("AlreadyFileExist", projectJsonFolderName, firstVersion);
                         continue;
                     }
                 }
@@ -126,7 +139,7 @@ namespace LocalTableBuilder
                 else
                 {
                     //검증
-                    var tJsonPath = GetTableJsonPath(projectJsonFileName, version);
+                    var tJsonPath = GetTableJsonPath(projectJsonFolderName, version);
                     if (File.Exists(tJsonPath))
                     {
                         //기존(테이블 Json)과 비교할(프로젝트 Json)이 같다면
@@ -139,33 +152,37 @@ namespace LocalTableBuilder
                     else
                     {
                         //예외처리)버전과 파일상태가 맞지않은 경우(버그)
-                        SaveError("FileNotExist", projectJsonFileName, version);
+                        SaveError("FileNotExist", projectJsonFolderName, version);
                         continue;
                     }
                 }
-                //--------------------------------------------------------------------------------5.버전증가 및 최종경로 재갱신 + Json파일 생성!
-                projectJsonFile.CopyTo(GetTableJsonPath(projectJsonFileName, ++version));
+                //--------------------------------------------------------------------------------5.버전증가 및 최종경로 재갱신 + 내부/외부 테이블 저장
+                //내부 경로 저장(버전별 파일 저장하여, 테이블 빌드 진행 상황을 컨트롤 하기 위함)
+                var tableJsonPath = GetTableJsonPath(projectJsonFolderName, ++version);
+                projectJsonFile.CopyTo(tableJsonPath);
+                //AWS S3 - 새로 생성된 버전의 파일 업로드
+                aws.UploadTableFile(tableJsonPath, projectJsonFolderName, version.ToString());
                 //--------------------------------------------------------------------------------6.최신버전 목록 갱신
                 if (0 < version)
                 {
-                    if (RecentVersions.TryGetValue(projectJsonFileName, out var pre))
+                    if (RecentVersions.TryGetValue(projectJsonFolderName, out var pre))
                     {
-                        RecentVersions[projectJsonFileName] = version;
+                        RecentVersions[projectJsonFolderName] = version;
                     }
                     else
                     {
-                        RecentVersions.Add(projectJsonFileName, version);
+                        RecentVersions.Add(projectJsonFolderName, version);
                     }
                 }
             }
             //-------------------------------------------------------------------------------7.최신버전 목록 저장 및 파이어베이스 갱신
             if (0 < RecentVersions.Keys.Count)
             {
+                //최신버전 목록 저장
                 SaveVersions(RecentVersions);
 
                 //파이어베이스 최신버전 목록 갱신
-                //var fb = new FireBase();
-                //fb.UpdateTableVersions(RecentVersions);
+                fb.UploadTableVersions(RecentVersions);
             }
 
             Console.WriteLine("테이블 빌드 완료");

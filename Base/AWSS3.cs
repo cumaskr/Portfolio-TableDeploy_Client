@@ -1,5 +1,7 @@
 ﻿using Amazon;
 using Amazon.S3;
+using Amazon.S3.Model;
+using Aspose.Cells.Charts;
 using dotenv.net;
 
 namespace LocalTableBuilder
@@ -71,5 +73,28 @@ namespace LocalTableBuilder
                 return true;
             }
         }
+
+        #region TableBuild
+
+        private const string bucketName = "asia-table";
+
+        //테이블 최신 버전 업로드
+        public void UploadTableFile(string localPath, string folderName, string fileName)
+        {
+            if (null != Client) 
+            {
+                var request = new PutObjectRequest
+                {
+                    BucketName = bucketName,
+                    FilePath = localPath,
+                    Key = $"{folderName}/{fileName}.{Const.FileExtension.Json}",
+                };
+                Client.PutObjectAsync(request).GetAwaiter().GetResult();
+
+                Console.WriteLine($"[AWS] Upload New Version Json File - {folderName}.{fileName}");
+            }
+        }
+
+        #endregion
     }
 }

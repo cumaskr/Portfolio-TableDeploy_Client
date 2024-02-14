@@ -43,16 +43,6 @@ namespace LocalTableBuilder
             }
         }
 
-        //테이블 최신 버전 업로드
-        public void UpdateTableVersions(Dictionary<string, int> recentVersions) 
-        {
-            if (null != Db)
-            {
-                var collection = Db.Collection(Server).Document(DocumentName);
-                collection.SetAsync(recentVersions).GetAwaiter().GetResult();
-            }
-        }
-
         //리소스 정리
         public void Dispose()
         {
@@ -84,5 +74,22 @@ namespace LocalTableBuilder
 
             return true;
         }
+
+        #region TableBuild
+
+        //테이블 최신 버전 업로드
+        public void UploadTableVersions(Dictionary<string, int> recentVersions)
+        {
+            if (null != Db)
+            {
+                var collection = Db.Collection(Server).Document(DocumentName);
+                collection.SetAsync(recentVersions).GetAwaiter().GetResult();
+
+                Console.WriteLine("[FireBase] Upload Recent Versions");
+
+            }
+        }
+
+        #endregion
     }
 }
