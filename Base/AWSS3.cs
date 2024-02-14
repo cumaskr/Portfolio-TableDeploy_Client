@@ -1,7 +1,6 @@
 ﻿using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Aspose.Cells.Charts;
 using dotenv.net;
 
 namespace LocalTableBuilder

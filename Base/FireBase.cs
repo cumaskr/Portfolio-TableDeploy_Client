@@ -1,6 +1,4 @@
-﻿using Amazon.S3;
-using dotenv.net;
-using Google.Cloud.Firestore;
+﻿using Google.Cloud.Firestore;
 
 namespace LocalTableBuilder
 {
