@@ -1,0 +1,14 @@
+[
+ {
+  "ID": 1,
+  "MapIndex": 1,
+  "Difficulty": 1,
+  "LimitLv": 10
+ },
+ {
+  "ID": 2,
+  "MapIndex": 2,
+  "Difficulty": 1,
+  "LimitLv": 5
+ }
+]
