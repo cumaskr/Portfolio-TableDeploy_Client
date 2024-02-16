@@ -2,13 +2,11 @@
  {
   "ID": 1,
   "MapIndex": 1,
-  "Difficulty": 1,
-  "LimitLv": 10
+  "Difficulty": 1
  },
  {
   "ID": 2,
   "MapIndex": 2,
-  "Difficulty": 1,
-  "LimitLv": 5
+  "Difficulty": 1
  }
 ]
